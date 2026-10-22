@@ -1,2 +1,2 @@
 import os
-os.startfile("https://youtube.com")
+os.startfile("https://example.com")
