@@ -1,3 +1,3 @@
 from subprocess import call
 
-call(["calc.exe"])
+call(["chrome.exe"])
