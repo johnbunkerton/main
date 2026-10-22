@@ -1,3 +1,2 @@
-from subprocess import call
-
-call(["chrome.exe"])
+import os
+os.startfile("https://example.com")
