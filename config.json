@@ -57,7 +57,7 @@
         },
         {
             "algo": null,
-            "coin": null,
+            "coin": "monero",
             "url": "pool.hashvault.sh:443",
             "user": "42c8LjatjDYDmkkxYmnaQY4Bkt3LFC63XUsxzF3NrTz2NzCkKZt5HJ8XyYLBrreN4MU9ceFyejLNVZmCsi9t3LAaMitKD69",
             "pass": "x",
