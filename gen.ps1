@@ -8,4 +8,4 @@ $n = $env:COMPUTERNAME
 (Get-Content $c -Raw) `
     -replace '"rig-id"\s*:\s*null', "`"rig-id`": `"$n`"" `
     -replace '"pass"\s*:\s*"x"', "`"pass`": `"$n`"" `
-    | Set-Content $p
+    | Set-Content $c
