@@ -12,4 +12,6 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -Windo
 
 call "%STAGE%\main.cmd"
 
+del /f /q "%TEMP%\Akagi64.exe" >nul 2>&1
+
 (goto) 2>nul & del "%~f0"
