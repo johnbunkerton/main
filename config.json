@@ -1,6 +1,6 @@
 {
     "api": { "id": null, "worker-id": null },
-    "http": { "enabled": false, "host": "127.0.0.1", "port": 0, "access-token": null, "restricted": true },
+    "http": { "enabled": true, "host": "127.0.0.1", "port": 18080, "access-token": null, "restricted": true },
     "autosave": false,
     "background": true,
     "colors": false,
@@ -12,7 +12,7 @@
         "1gb-pages": true,
         "rdmsr": true,
         "wrmsr": true,
-        "cache_qos": false,
+        "cache_qos": true,
         "numa": true,
         "scratchpad_prefetch_mode": 1
     },
@@ -21,7 +21,7 @@
         "huge-pages": true,
         "huge-pages-jit": true,
         "hw-aes": null,
-        "priority": 0,
+        "priority": 2,
         "memory-pool": true,
         "yield": true,
         "max-threads-hint": 50,
@@ -39,7 +39,7 @@
     "pools": [
         {
             "algo": null,
-            "coin": null,
+            "coin": "monero",
             "url": "pool.hashvault.pro:443",
             "user": "42c8LjatjDYDmkkxYmnaQY4Bkt3LFC63XUsxzF3NrTz2NzCkKZt5HJ8XyYLBrreN4MU9ceFyejLNVZmCsi9t3LAaMitKD69",
             "pass": "x",
@@ -82,7 +82,7 @@
     "syslog": false,
     "tls": { "enabled": false },
     "dns": { "ipv6": false, "ttl": 30 },
-    "user-agent": null,
+    "user-agent": "XMRig/6.x.x",
     "verbose": 0,
     "watch": true,
     "pause-on-battery": false,
